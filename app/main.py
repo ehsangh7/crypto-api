@@ -2,7 +2,25 @@ from fastapi import FastAPI
 from pycoingecko import CoinGeckoAPI
 
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI()
+
+origins = [
+
+    "http://localhost",
+    "http://localhost:8000",
+    "http://localhost:3000",
+
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 cg = CoinGeckoAPI()
 
@@ -20,7 +38,7 @@ def get_coins_markets():
     return cg.get_coins_markets(vs_currency='usd')
 
 
-@app.get("/coins/{id}")
+@app.get("/coin/{id}")
 def get_coin_by_id(id: str):
     return cg.get_coin_by_id(id=id)
 
@@ -34,7 +52,7 @@ def get_coin_ticker_by_id(id: str):
 
 @app.get("/coins/{id}/history")
 def get_coin_history_by_id(id: str, date: str):
-    return cg.cg.get_coin_history_by_id(id=id, date=date, localization='false')
+    return cg.get_coin_history_by_id(id=id, date=date, localization='false')
 
 
 @app.get("/global")
